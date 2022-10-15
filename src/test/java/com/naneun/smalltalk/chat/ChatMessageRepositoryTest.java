@@ -1,25 +1,35 @@
 package com.naneun.smalltalk.chat;
 
+import com.naneun.smalltalk.container.MySQLTestContainer;
 import com.naneun.smalltalk.config.DataJpaConfig;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@ActiveProfiles("junit-test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(DataJpaConfig.class)
-class ChatMessageRepositoryTest {
+class ChatMessageRepositoryTest extends MySQLTestContainer {
 
     final ChatRoomRepository chatRoomRepository;
     final ChatMessageRepository chatMessageRepository;
+
+    @BeforeAll
+    static void setUp() {
+        MYSQL_CONTAINER.start();
+        assertTrue(MYSQL_CONTAINER.isRunning());
+    }
 
     @Autowired
     ChatMessageRepositoryTest(ChatRoomRepository chatRoomRepository, ChatMessageRepository chatMessageRepository) {
