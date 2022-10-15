@@ -1,20 +1,13 @@
 spring:
   datasource:
-#    http://localhost:8080/h2-console/login.jsp?jsessionid=6862664918ee3cf268cd6d29156f0736
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1;MODE=MYSQL
-    username: sa
-    password:
-
-  h2:
-    console:
-      enabled: true
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8.0.23:///testDB?user=root?password=;
 
   jpa:
     open-in-view: false
 
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
 
     properties:
       hibernate:
@@ -22,6 +15,8 @@ spring:
         default_batch_fetch_size: 500
 
     defer-datasource-initialization: true
+
+    show-sql: true
 
 logging:
   level:
