@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8.0.23:///testDB?user=root?password=;
+
+  jpa:
+    open-in-view: false
+
+    hibernate:
+      ddl-auto: create-drop
+
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 500
+
+    defer-datasource-initialization: true
+
+    show-sql: true
+
+logging:
+  level:
+    root: info
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql: trace
+    com.naneun.smalltalk: debug
