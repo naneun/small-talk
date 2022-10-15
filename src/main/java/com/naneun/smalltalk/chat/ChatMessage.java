@@ -1,12 +1,16 @@
 package com.naneun.smalltalk.chat;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @ToString
 public class ChatMessage {
@@ -28,6 +32,10 @@ public class ChatMessage {
 
     @Enumerated(EnumType.STRING)
     private MessageState state;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime sendDateTime;
 
     /********************************************************************/
 

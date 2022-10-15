@@ -1,9 +1,11 @@
 package com.naneun.smalltalk.chat;
 
+import com.naneun.smalltalk.config.DataJpaConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +15,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
+@Import(DataJpaConfig.class)
 class ChatMessageRepositoryTest {
 
     final ChatRoomRepository chatRoomRepository;
@@ -48,6 +51,8 @@ class ChatMessageRepositoryTest {
         assertThat(unreadMessageCount).isEqualTo(savedChatMessages.size());
         savedChatMessages.forEach((chatMessage) -> assertThat(chatMessage)
                 .usingRecursiveComparison()
+                .comparingOnlyFields()
+                .ignoringFields("sendDateTime")
                 .isEqualTo(savedChatMessages.get(newChatMessages.indexOf(chatMessage))));
     }
 }
