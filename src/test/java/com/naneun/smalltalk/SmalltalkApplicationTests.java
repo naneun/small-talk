@@ -9,5 +9,4 @@ class SmalltalkApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
