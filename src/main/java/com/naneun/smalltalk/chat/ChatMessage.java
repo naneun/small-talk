@@ -1,5 +1,6 @@
 package com.naneun.smalltalk.chat;
 
+import com.naneun.smalltalk.user.Member;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,7 +25,9 @@ public class ChatMessage {
     @ToString.Exclude
     private ChatRoom chatRoom;
 
-    // TODO anonymous -> real name
+    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member sender;
 
     @NotBlank
     @Column(nullable = false)

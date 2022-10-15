@@ -17,7 +17,7 @@ class ChatRoomRepositoryTest {
     final ChatRoomRepository chatRoomRepository;
 
     @Autowired
-    public ChatRoomRepositoryTest(ChatRoomRepository chatRoomRepository) {
+    ChatRoomRepositoryTest(ChatRoomRepository chatRoomRepository) {
         this.chatRoomRepository = chatRoomRepository;
     }
 
@@ -27,9 +27,13 @@ class ChatRoomRepositoryTest {
         // given
         ChatRoom newChatRoom = ChatRoom.of("New ChatRoom");
         chatRoomRepository.save(newChatRoom);
+        Long roomId = newChatRoom.getId();
 
         // when
-        ChatRoom savedChatRoom = chatRoomRepository.findById(newChatRoom.getId())
+        chatRoomRepository.findById(roomId)
+                .orElseThrow();
+
+        ChatRoom savedChatRoom = chatRoomRepository.findAllMembersById(roomId)
                 .orElseThrow();
 
         // then

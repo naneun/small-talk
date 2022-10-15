@@ -1,5 +1,6 @@
 package com.naneun.smalltalk.chat;
 
+import com.naneun.smalltalk.user.Member;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +22,10 @@ public class ChatRoom {
     @Column(nullable = false)
     private String title;
 
+    // TODO 1 : N -> N : N
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
+    private final List<Member> members = new ArrayList<>();
+
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private final List<ChatMessage> chatMessages = new ArrayList<>();
 
@@ -39,6 +44,14 @@ public class ChatRoom {
     }
 
     /********************************************************************/
+
+    public void pushMember(Member member) {
+        this.members.add(member);
+    }
+
+    public void popMember(Member member) {
+        this.members.remove(member);
+    }
 
     public void addChatMessages(List<ChatMessage> chatMessages) {
         this.chatMessages.addAll(chatMessages);

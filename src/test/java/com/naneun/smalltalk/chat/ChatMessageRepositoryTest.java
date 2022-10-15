@@ -22,7 +22,7 @@ class ChatMessageRepositoryTest {
     final ChatMessageRepository chatMessageRepository;
 
     @Autowired
-    public ChatMessageRepositoryTest(ChatRoomRepository chatRoomRepository, ChatMessageRepository chatMessageRepository) {
+    ChatMessageRepositoryTest(ChatRoomRepository chatRoomRepository, ChatMessageRepository chatMessageRepository) {
         this.chatRoomRepository = chatRoomRepository;
         this.chatMessageRepository = chatMessageRepository;
     }
