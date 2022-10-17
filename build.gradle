@@ -63,3 +63,53 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// for all modules
+subprojects {
+	apply plugin: 'jacoco'
+
+	test {
+		useJUnitPlatform() // for JUnit5
+		finalizedBy 'jacocoTestReport'
+	}
+
+	jacoco {
+		toolVersion = '0.8.8'
+	}
+
+	jacocoTestReport {
+		dependsOn test
+		reports {
+			html.enabled true
+			xml.enabled true
+			csv.enabled true
+
+			html.destination file("src/jacoco/jacoco.html")
+			xml.destination file("src/jacoco/jacoco.xml")
+		}
+		finalizedBy 'jacocoTestCoverageVerification'
+	}
+
+	jacocoTestCoverageVerification {
+		violationRules {
+			rule {
+				element = 'CLASS'
+				enabled = true
+
+				limit {
+					counter = 'LINE'
+					value = 'COVEREDRATIO'
+					minimum = 0.60
+				}
+
+				limit {
+					counter = 'METHOD'
+					value = 'COVEREDRATIO'
+					minimum = 0.60
+				}
+
+				excludes = []
+			}
+		}
+	}
+}
