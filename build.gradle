@@ -1,9 +1,10 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.4'
+	id 'org.springframework.boot' version '2.6.9'
 	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
 	id 'java'
 	id "org.sonarqube" version "3.4.0.2513"
 	id 'jacoco'
+	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 sonarqube {
@@ -19,6 +20,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
+	asciidoctorExt
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
@@ -59,6 +61,16 @@ dependencies {
 	testImplementation 'org.testcontainers:testcontainers:1.17.5'
 	testImplementation 'org.testcontainers:junit-jupiter:1.17.5'
 	testImplementation 'org.testcontainers:mysql:1.17.5'
+
+	// Add MockMvc dependency for Test Scope
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+	// Mockito
+	testImplementation "org.mockito:mockito-core"
+	testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+
+	// Asciidoctor
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 }
 
 tasks.named('test') {
@@ -109,4 +121,44 @@ jacocoTestCoverageVerification {
 			excludes = []
 		}
 	}
+}
+
+// RestDocs
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+// 1
+tasks.named('asciidoctor') {
+	configurations 'asciidoctorExt'
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+// 2
+bootJar {
+	// Check for documentation generation before build
+	dependsOn asciidoctor
+	// Copy the generated documentation to static/docs
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'BOOT-INF/classes/static/docs'
+//		into "${sourceSets.main.output.resourcesDir}/static/docs"
+	}
+	finalizedBy 'copyDocument'
+}
+
+// 3
+task copyDocument(type: Copy) {
+	dependsOn bootJar
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
 }
