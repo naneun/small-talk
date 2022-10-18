@@ -38,3 +38,6 @@ out/
 
 ### Jacoco report ###
 src/jacoco/
+
+### RestDocs ###
+BOOT-INF
