@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @WebMvcTest(ChatRoomController.class)
 @AutoConfigureRestDocs
-public class ChatRoomControllerTest {
+class ChatRoomControllerTest {
 
     final MockMvc mockMvc;
     final ObjectMapper objectMapper = new ObjectMapper();
