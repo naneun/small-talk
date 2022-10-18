@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
 	id 'java'
 	id "org.sonarqube" version "3.4.0.2513"
+	id 'jacoco'
 }
 
 sonarqube {
@@ -64,52 +65,48 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// for all modules
-subprojects {
-	apply plugin: 'jacoco'
+// Jacoco
+test {
+	useJUnitPlatform() // for JUnit5
+	finalizedBy 'jacocoTestReport'
+}
 
-	test {
-		useJUnitPlatform() // for JUnit5
-		finalizedBy 'jacocoTestReport'
+jacoco {
+	toolVersion = '0.8.8'
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		html.enabled true
+		xml.enabled true
+		csv.enabled true
+
+		html.destination file("src/jacoco/jacoco.html")
+		xml.destination file("src/jacoco/jacoco.xml")
 	}
+	finalizedBy 'jacocoTestCoverageVerification'
+}
 
-	jacoco {
-		toolVersion = '0.8.8'
-	}
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = 'CLASS'
+			enabled = true
 
-	jacocoTestReport {
-		dependsOn test
-		reports {
-			html.enabled true
-			xml.enabled true
-			csv.enabled true
-
-			html.destination file("src/jacoco/jacoco.html")
-			xml.destination file("src/jacoco/jacoco.xml")
-		}
-		finalizedBy 'jacocoTestCoverageVerification'
-	}
-
-	jacocoTestCoverageVerification {
-		violationRules {
-			rule {
-				element = 'CLASS'
-				enabled = true
-
-				limit {
-					counter = 'LINE'
-					value = 'COVEREDRATIO'
-					minimum = 0.60
-				}
-
-				limit {
-					counter = 'METHOD'
-					value = 'COVEREDRATIO'
-					minimum = 0.60
-				}
-
-				excludes = []
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.60
 			}
+
+			limit {
+				counter = 'METHOD'
+				value = 'COVEREDRATIO'
+				minimum = 0.60
+			}
+
+			excludes = []
 		}
 	}
 }
