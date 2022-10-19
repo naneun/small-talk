@@ -2,6 +2,7 @@ package com.naneun.smalltalk.user;
 
 import com.naneun.smalltalk.chat.ChatRoom;
 import com.naneun.smalltalk.chat.ChatRoomMember;
+import com.naneun.smalltalk.chat.ChatRoomMemberRepository;
 import com.naneun.smalltalk.chat.ChatRoomRepository;
 import com.naneun.smalltalk.config.DataJpaConfig;
 import com.naneun.smalltalk.config.QuerydslConfig;
@@ -27,11 +28,15 @@ class MemberRepositoryTest extends MySQLTestContainer {
 
     final MemberRepository memberRepository;
     final ChatRoomRepository chatRoomRepository;
+    final ChatRoomMemberRepository chatRoomMemberRepository;
 
     @Autowired
-    public MemberRepositoryTest(MemberRepository memberRepository, ChatRoomRepository chatRoomRepository) {
+    public MemberRepositoryTest(MemberRepository memberRepository, ChatRoomRepository chatRoomRepository
+            , ChatRoomMemberRepository chatRoomMemberRepository) {
+
         this.memberRepository = memberRepository;
         this.chatRoomRepository = chatRoomRepository;
+        this.chatRoomMemberRepository = chatRoomMemberRepository;
     }
 
     @BeforeAll
@@ -73,20 +78,20 @@ class MemberRepositoryTest extends MySQLTestContainer {
         targetChatRoomOne.pushMember(targetMember);
         targetChatRoomTwo.pushMember(targetMember);
 
-        ChatRoomMember savedChatRoomMemberOne = ChatRoomMember.of(targetChatRoomOne, targetMember);
-        ChatRoomMember savedChatRoomMemberTwo = ChatRoomMember.of(targetChatRoomTwo, targetMember);
-        ChatRoomMember savedChatRoomMemberThree = ChatRoomMember.of(targetChatRoomThree, targetMember);
+        List<ChatRoomMember> chatRoomMembers = chatRoomMemberRepository.findByMember(targetMember);
+        for (ChatRoomMember chatRoomMember : chatRoomMembers) {
+            targetMember.enterChatRoom(chatRoomMember);
+        }
 
         // when
         memberRepository.findById(targetMember.getId())
                 .orElseThrow();
 
         // then
-        List<ChatRoomMember> chatRoomMembers = targetMember.getChatRooms();
+        List<ChatRoomMember> savedChatRoomMembers = targetMember.getChatRoomMembers();
         assertAll(
-                () -> assertThat(chatRoomMembers).contains(savedChatRoomMemberOne),
-                () -> assertThat(chatRoomMembers).contains(savedChatRoomMemberTwo),
-                () -> assertThat(chatRoomMembers).doesNotContain(savedChatRoomMemberThree)
+                () -> assertThat(savedChatRoomMembers).hasSize(chatRoomMembers.size()),
+                () -> assertThat(savedChatRoomMembers).containsAll(chatRoomMembers)
         );
     }
 }

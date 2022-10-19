@@ -26,6 +26,7 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
 
     final ChatRoomRepository chatRoomRepository;
     final MemberRepository memberRepository;
+    final ChatRoomMemberRepository chatRoomMemberRepository;
 
     @BeforeAll
     static void setUp() {
@@ -34,9 +35,12 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
     }
 
     @Autowired
-    ChatRoomRepositoryTest(ChatRoomRepository chatRoomRepository, MemberRepository memberRepository) {
+    ChatRoomRepositoryTest(ChatRoomRepository chatRoomRepository, MemberRepository memberRepository
+            , ChatRoomMemberRepository chatRoomMemberRepository) {
+
         this.chatRoomRepository = chatRoomRepository;
         this.memberRepository = memberRepository;
+        this.chatRoomMemberRepository = chatRoomMemberRepository;
     }
 
     @Test
@@ -133,7 +137,7 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
     }
 
     @Test
-    void 채팅방에서_멤버를_제외한다() {
+    void 채팅방에서_특정_멤버를_제외한다() {
 
         // given
         ChatRoom testChatRoom = ChatRoom.of("test-chat-room");
@@ -149,10 +153,10 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
         ChatRoom updatedChatRoom = chatRoomRepository.findById(testChatRoom.getId())
                 .orElseThrow();
 
-        updatedChatRoom.popMember(newMemberTwo);
-
-        ChatRoomMember savedChatRoomMemberOne = ChatRoomMember.of(testChatRoom, newMemberOne);
-        ChatRoomMember savedChatRoomMemberTwo = ChatRoomMember.of(testChatRoom, newMemberTwo);
+        List<ChatRoomMember> updatedChatRoomChatRoomMembers = updatedChatRoom.getChatRoomMembers();
+        ChatRoomMember poppedChatRoomMember = updatedChatRoomChatRoomMembers.get(1);
+        updatedChatRoom.popMember(poppedChatRoomMember.getMember());
+        newMemberTwo.leaveChatRoom(poppedChatRoomMember);
 
         // when
         chatRoomRepository.findById(updatedChatRoom.getId())
@@ -160,9 +164,10 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
 
         // then
         List<ChatRoomMember> chatRoomMembers = testChatRoom.getChatRoomMembers();
+
         assertAll(
-                () -> assertThat(chatRoomMembers).contains(savedChatRoomMemberOne),
-                () -> assertThat(chatRoomMembers).doesNotContain(savedChatRoomMemberTwo)
+                () -> assertThat(chatRoomMembers).contains(updatedChatRoomChatRoomMembers.get(0)),
+                () -> assertThat(chatRoomMembers).doesNotContain(poppedChatRoomMember)
         );
     }
 

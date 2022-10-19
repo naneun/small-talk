@@ -25,7 +25,7 @@ public class Member {
 
     @JoinColumn
     @OneToMany(fetch = FetchType.LAZY)
-    private final List<ChatRoomMember> chatRooms = new ArrayList<>();
+    private final List<ChatRoomMember> chatRoomMembers = new ArrayList<>();
 
     /********************************************************************/
 
@@ -43,10 +43,10 @@ public class Member {
     /********************************************************************/
 
     public void enterChatRoom(ChatRoomMember chatRoomMember) {
-        chatRooms.add(chatRoomMember);
+        chatRoomMembers.add(chatRoomMember);
     }
 
     public void leaveChatRoom(ChatRoomMember chatRoomMember) {
-        chatRooms.remove(chatRoomMember);
+        chatRoomMembers.remove(chatRoomMember);
     }
 }
