@@ -1,5 +1,6 @@
 package com.naneun.smalltalk.chat;
 
+import com.naneun.smalltalk.config.QuerydslConfig;
 import com.naneun.smalltalk.container.MySQLTestContainer;
 import com.naneun.smalltalk.config.DataJpaConfig;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DataJpaTest
 @ActiveProfiles("junit-test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(DataJpaConfig.class)
+@Import({DataJpaConfig.class, QuerydslConfig.class})
 class ChatMessageRepositoryTest extends MySQLTestContainer {
 
     final ChatRoomRepository chatRoomRepository;
