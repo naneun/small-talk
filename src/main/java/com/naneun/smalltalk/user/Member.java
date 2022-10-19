@@ -2,15 +2,16 @@ package com.naneun.smalltalk.user;
 
 import com.naneun.smalltalk.chat.ChatRoomMember;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 public class Member {
 
@@ -47,20 +48,5 @@ public class Member {
 
     public void leaveChatRoom(ChatRoomMember chatRoomMember) {
         chatRooms.remove(chatRoomMember);
-    }
-
-    /********************************************************************/
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Member member = (Member) o;
-        return Objects.equals(id, member.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

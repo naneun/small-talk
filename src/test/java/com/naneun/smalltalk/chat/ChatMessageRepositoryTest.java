@@ -42,11 +42,11 @@ class ChatMessageRepositoryTest extends MySQLTestContainer {
     void 아직_읽지_않은_메시지를_조회한다() {
 
         // given
-        ChatRoom testChatRoom = chatRoomRepository.save(ChatRoom.of("Test ChatRoom"));
+        ChatRoom testChatRoom = chatRoomRepository.save(ChatRoom.of("test-chat-room"));
         List<ChatMessage> newChatMessages = List.of(
-                ChatMessage.of(testChatRoom, "UNREAD ChatMessage One"),
-                ChatMessage.of(testChatRoom, "UNREAD ChatMessage Two"),
-                ChatMessage.of(testChatRoom, "UNREAD ChatMessage Three")
+                ChatMessage.of(testChatRoom, "unread-chat-message-one"),
+                ChatMessage.of(testChatRoom, "unread-chat-message-two"),
+                ChatMessage.of(testChatRoom, "unread-chat-message-three")
         );
         testChatRoom.addChatMessages(newChatMessages);
 

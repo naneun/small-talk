@@ -9,6 +9,7 @@ import java.util.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = "id")
 @Getter
 public class ChatRoom {
 
@@ -59,20 +60,5 @@ public class ChatRoom {
 
     public void addChatMessages(List<ChatMessage> chatMessages) {
         this.chatMessages.addAll(chatMessages);
-    }
-
-    /********************************************************************/
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChatRoom chatRoom = (ChatRoom) o;
-        return Objects.equals(id, chatRoom.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }
