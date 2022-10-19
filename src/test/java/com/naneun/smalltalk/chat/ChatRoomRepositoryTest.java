@@ -1,6 +1,5 @@
 package com.naneun.smalltalk.chat;
 
-import com.naneun.smalltalk.config.DataJpaConfig;
 import com.naneun.smalltalk.config.QuerydslConfig;
 import com.naneun.smalltalk.container.MySQLTestContainer;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,7 +50,9 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
                 .orElseThrow();
 
         // then
-        assertThat(savedChatRoom).usingRecursiveComparison().isEqualTo(newChatRoom);
+        assertThat(savedChatRoom)
+                .usingRecursiveComparison()
+                .isEqualTo(newChatRoom);
     }
 
     @Test

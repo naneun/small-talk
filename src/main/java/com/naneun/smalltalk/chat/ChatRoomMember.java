@@ -9,7 +9,6 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "id")
 @Getter
-@ToString
 public class ChatRoomMember {
 
     @Id

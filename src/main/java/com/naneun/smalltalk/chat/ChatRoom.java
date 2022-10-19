@@ -13,7 +13,6 @@ import java.util.TreeSet;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
 public class ChatRoom {
 
     @Id

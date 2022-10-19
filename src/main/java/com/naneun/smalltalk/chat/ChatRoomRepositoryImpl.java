@@ -13,6 +13,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
+    @Override
     public List<ChatRoom> findByTitle(String keyword) {
         return queryFactory.selectFrom(chatRoom)
                 .where(containsKeyword(keyword))
