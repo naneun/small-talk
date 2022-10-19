@@ -5,13 +5,11 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
 public class ChatRoom {
 
     @Id
@@ -22,9 +20,8 @@ public class ChatRoom {
     @Column(nullable = false)
     private String title;
 
-    // TODO 1 : N -> N : N
-    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
-    private final List<Member> members = new ArrayList<>();
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private final List<ChatRoomMember> chatRoomMembers = new ArrayList<>();
 
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private final List<ChatMessage> chatMessages = new ArrayList<>();
@@ -46,14 +43,36 @@ public class ChatRoom {
     /********************************************************************/
 
     public void pushMember(Member member) {
-        this.members.add(member);
+        ChatRoomMember chatRoomMember = ChatRoomMember.of(this, member);
+        if (this.chatRoomMembers.contains(chatRoomMember)) {
+            return;
+        }
+        member.enterChatRoom(chatRoomMember);
+        this.chatRoomMembers.add(chatRoomMember);
     }
 
     public void popMember(Member member) {
-        this.members.remove(member);
+        ChatRoomMember chatRoomMember = ChatRoomMember.of(this, member);
+        member.leaveChatRoom(chatRoomMember);
+        this.chatRoomMembers.remove(chatRoomMember);
     }
 
     public void addChatMessages(List<ChatMessage> chatMessages) {
         this.chatMessages.addAll(chatMessages);
+    }
+
+    /********************************************************************/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatRoom chatRoom = (ChatRoom) o;
+        return Objects.equals(id, chatRoom.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

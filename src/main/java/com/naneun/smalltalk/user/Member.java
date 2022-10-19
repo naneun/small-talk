@@ -1,16 +1,17 @@
 package com.naneun.smalltalk.user;
 
-import com.naneun.smalltalk.chat.ChatRoom;
+import com.naneun.smalltalk.chat.ChatRoomMember;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = "id")
 @Getter
-@ToString
 public class Member {
 
     @Id
@@ -21,13 +22,11 @@ public class Member {
     @Column(nullable = false)
     private String name;
 
-    // TODO Last Access Location (longitude, latitude)
-    // TODO Last Accessed Time
-
-    // TODO N : 1 -> N : N
     @JoinColumn
-    @ManyToOne
-    private ChatRoom chatRoom;
+    @OneToMany(fetch = FetchType.LAZY)
+    private final List<ChatRoomMember> chatRooms = new ArrayList<>();
+
+    /********************************************************************/
 
     @Builder
     private Member(String name) {
@@ -38,5 +37,30 @@ public class Member {
         return Member.builder()
                 .name(name)
                 .build();
+    }
+
+    /********************************************************************/
+
+    public void enterChatRoom(ChatRoomMember chatRoomMember) {
+        chatRooms.add(chatRoomMember);
+    }
+
+    public void leaveChatRoom(ChatRoomMember chatRoomMember) {
+        chatRooms.remove(chatRoomMember);
+    }
+
+    /********************************************************************/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return Objects.equals(id, member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
