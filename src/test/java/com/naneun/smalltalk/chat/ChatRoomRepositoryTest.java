@@ -105,7 +105,33 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
 
         // then
         List<ChatRoomMember> chatRoomMembers = updatedChatRoom.getChatRoomMembers();
-        assertThat(chatRoomMembers.contains(savedChatRoomMember)).isTrue();
+        assertThat(chatRoomMembers.get(chatRoomMembers.size() - 1)).isEqualTo(savedChatRoomMember);
+        assertThat(chatRoomMembers).contains(savedChatRoomMember);
+    }
+
+    @Test
+    void 채팅방에_이미_참여한_멤버를_추가하면_무시한다() {
+
+        // given
+        ChatRoom testChatRoom = ChatRoom.of("test-chat-room");
+        chatRoomRepository.save(testChatRoom);
+
+        Member newMember = Member.of("new-member");
+        memberRepository.save(newMember);
+
+        testChatRoom.pushMember(newMember);
+        testChatRoom.pushMember(newMember);
+
+        ChatRoomMember savedChatRoomMember = ChatRoomMember.of(testChatRoom, newMember);
+
+        // when
+        ChatRoom updatedChatRoom = chatRoomRepository.findById(testChatRoom.getId())
+                .orElseThrow();
+
+        // then
+        List<ChatRoomMember> chatRoomMembers = updatedChatRoom.getChatRoomMembers();
+        assertThat(chatRoomMembers.get(chatRoomMembers.size() - 1)).isEqualTo(savedChatRoomMember);
+        assertThat(chatRoomMembers).contains(savedChatRoomMember);
     }
 
     @Test
@@ -137,8 +163,28 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
         // then
         List<ChatRoomMember> chatRoomMembers = testChatRoom.getChatRoomMembers();
         assertAll(
-                () -> assertThat(chatRoomMembers.contains(savedChatRoomMemberOne)).isTrue(),
-                () -> assertThat(chatRoomMembers.contains(savedChatRoomMemberTwo)).isFalse()
+                () -> assertThat(chatRoomMembers).contains(savedChatRoomMemberOne),
+                () -> assertThat(chatRoomMembers).doesNotContain(savedChatRoomMemberTwo)
+        );
+    }
+
+    @Test
+    void 키워드가_주어지지_않았을_경우_모든_채팅방_리스트를_조회한다() {
+
+        // given
+        ChatRoom testChatRoomOne = ChatRoom.of("test-chat-room-one");
+        ChatRoom testChatRoomTwo = ChatRoom.of("test-chat-room-two-target");
+        ChatRoom testChatRoomThree = ChatRoom.of("test-chat-room-three-target");
+        chatRoomRepository.saveAll(List.of(testChatRoomOne, testChatRoomTwo, testChatRoomThree));
+
+        // when
+        List<ChatRoom> foundedChatRooms = chatRoomRepository.findByTitle(null);
+
+        // then
+        assertAll(
+                () -> assertThat(foundedChatRooms).contains(testChatRoomOne),
+                () -> assertThat(foundedChatRooms).contains(testChatRoomTwo),
+                () -> assertThat(foundedChatRooms).contains(testChatRoomThree)
         );
     }
 
@@ -148,7 +194,7 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
         // given
         ChatRoom testChatRoomOne = ChatRoom.of("test-chat-room-one");
         ChatRoom testChatRoomTwo = ChatRoom.of("test-chat-room-two-target");
-        ChatRoom testChatRoomThree = ChatRoom.of("test-chat-room-two-target");
+        ChatRoom testChatRoomThree = ChatRoom.of("test-chat-room-three-target");
         chatRoomRepository.saveAll(List.of(testChatRoomOne, testChatRoomTwo, testChatRoomThree));
 
         String keyword = "target";
@@ -158,9 +204,9 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
 
         // then
         assertAll(
-                () -> assertThat(foundedChatRooms.contains(testChatRoomOne)).isFalse(),
-                () -> assertThat(foundedChatRooms.contains(testChatRoomTwo)).isTrue(),
-                () -> assertThat(foundedChatRooms.contains(testChatRoomThree)).isTrue()
+                () -> assertThat(foundedChatRooms).doesNotContain(testChatRoomOne),
+                () -> assertThat(foundedChatRooms).contains(testChatRoomTwo),
+                () -> assertThat(foundedChatRooms).contains(testChatRoomThree)
         );
     }
 }
