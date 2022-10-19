@@ -5,10 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,7 +21,7 @@ public class ChatRoom {
     private String title;
 
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private final Set<ChatRoomMember> chatRoomMembers = new TreeSet<>();
+    private final List<ChatRoomMember> chatRoomMembers = new ArrayList<>();
 
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private final List<ChatMessage> chatMessages = new ArrayList<>();
@@ -47,7 +44,7 @@ public class ChatRoom {
 
     public void pushMember(Member member) {
         ChatRoomMember chatRoomMember = ChatRoomMember.of(this, member);
-        if (chatRoomMembers.contains(chatRoomMember)) {
+        if (this.chatRoomMembers.contains(chatRoomMember)) {
             return;
         }
         this.chatRoomMembers.add(chatRoomMember);

@@ -8,14 +8,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = "id")
 @Getter
-@ToString
 public class Member {
 
     @Id
@@ -28,7 +27,7 @@ public class Member {
 
     @JoinColumn
     @OneToMany(fetch = FetchType.LAZY)
-    private List<ChatRoomMember> chatRooms;
+    private final List<ChatRoomMember> chatRooms = new ArrayList<>();
 
     @CreatedDate
     private LocalDateTime lastAccessedAt;

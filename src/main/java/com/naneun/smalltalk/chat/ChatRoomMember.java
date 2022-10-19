@@ -6,8 +6,9 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"chatRoom", "member"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = {"chatRoom", "member"})
 @Getter
 public class ChatRoomMember {
 
@@ -15,12 +16,12 @@ public class ChatRoomMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(updatable = false)
+    @JoinColumn(updatable = false, name = "chatRoom")
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private ChatRoom chatRoom;
 
-    @JoinColumn(updatable = false)
+    @JoinColumn(updatable = false, name = "member")
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private Member member;
