@@ -43,7 +43,7 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
         chatRoomRepository.findById(roomId)
                 .orElseThrow();
 
-        ChatRoom savedChatRoom = chatRoomRepository.findAllMembersById(roomId)
+        ChatRoom savedChatRoom = chatRoomRepository.findAllChatRoomMembersById(roomId)
                 .orElseThrow();
 
         // then
