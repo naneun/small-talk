@@ -20,12 +20,12 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn
+    @JoinColumn(updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private ChatRoom chatRoom;
 
-    @JoinColumn
+    @JoinColumn(updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Member sender;
 

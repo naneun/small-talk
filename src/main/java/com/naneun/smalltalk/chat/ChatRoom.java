@@ -7,6 +7,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,9 +24,8 @@ public class ChatRoom {
     @Column(nullable = false)
     private String title;
 
-    // TODO 1 : N -> N : N
-    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
-    private final List<Member> members = new ArrayList<>();
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private final Set<ChatRoomMember> chatRoomMembers = new TreeSet<>();
 
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private final List<ChatMessage> chatMessages = new ArrayList<>();
@@ -46,11 +47,16 @@ public class ChatRoom {
     /********************************************************************/
 
     public void pushMember(Member member) {
-        this.members.add(member);
+        ChatRoomMember chatRoomMember = ChatRoomMember.of(this, member);
+        if (chatRoomMembers.contains(chatRoomMember)) {
+            return;
+        }
+        this.chatRoomMembers.add(chatRoomMember);
     }
 
     public void popMember(Member member) {
-        this.members.remove(member);
+        ChatRoomMember chatRoomMember = ChatRoomMember.of(this, member);
+        this.chatRoomMembers.remove(chatRoomMember);
     }
 
     public void addChatMessages(List<ChatMessage> chatMessages) {

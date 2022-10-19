@@ -1,12 +1,17 @@
 package com.naneun.smalltalk.user;
 
-import com.naneun.smalltalk.chat.ChatRoom;
+import com.naneun.smalltalk.chat.ChatRoomMember;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "id")
 @Getter
@@ -21,13 +26,14 @@ public class Member {
     @Column(nullable = false)
     private String name;
 
-    // TODO Last Access Location (longitude, latitude)
-    // TODO Last Accessed Time
-
-    // TODO N : 1 -> N : N
     @JoinColumn
-    @ManyToOne
-    private ChatRoom chatRoom;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<ChatRoomMember> ChatRooms;
+
+    @CreatedDate
+    private LocalDateTime lastAccessedAt;
+
+    /********************************************************************/
 
     @Builder
     private Member(String name) {
