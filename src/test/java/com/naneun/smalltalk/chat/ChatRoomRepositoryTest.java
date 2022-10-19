@@ -105,7 +105,6 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
 
         // then
         List<ChatRoomMember> chatRoomMembers = updatedChatRoom.getChatRoomMembers();
-        assertThat(chatRoomMembers.get(chatRoomMembers.size() - 1)).isEqualTo(savedChatRoomMember);
         assertThat(chatRoomMembers).contains(savedChatRoomMember);
     }
 
@@ -130,7 +129,6 @@ class ChatRoomRepositoryTest extends MySQLTestContainer {
 
         // then
         List<ChatRoomMember> chatRoomMembers = updatedChatRoom.getChatRoomMembers();
-        assertThat(chatRoomMembers.get(chatRoomMembers.size() - 1)).isEqualTo(savedChatRoomMember);
         assertThat(chatRoomMembers).contains(savedChatRoomMember);
     }
 

@@ -58,6 +58,7 @@ class MemberRepositoryTest extends MySQLTestContainer {
                 .isEqualTo(newMember);
     }
 
+    @Test
     void 회원이_현재_참여_중인_채팅방_리스트를_조회한다() {
 
         // given
@@ -67,7 +68,7 @@ class MemberRepositoryTest extends MySQLTestContainer {
         ChatRoom targetChatRoomOne = ChatRoom.of("target-chat-room-one");
         ChatRoom targetChatRoomTwo = ChatRoom.of("target-chat-room-two");
         ChatRoom targetChatRoomThree = ChatRoom.of("target-chat-room-three");
-        chatRoomRepository.saveAll(List.of(targetChatRoomOne, targetChatRoomTwo));
+        chatRoomRepository.saveAll(List.of(targetChatRoomOne, targetChatRoomTwo, targetChatRoomThree));
 
         targetChatRoomOne.pushMember(targetMember);
         targetChatRoomTwo.pushMember(targetMember);

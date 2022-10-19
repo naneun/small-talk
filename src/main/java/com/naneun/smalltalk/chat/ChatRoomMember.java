@@ -4,11 +4,11 @@ import com.naneun.smalltalk.user.Member;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"chatRoom", "member"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = {"chatRoom", "member"})
 @Getter
 public class ChatRoomMember {
 
@@ -40,5 +40,20 @@ public class ChatRoomMember {
                 .chatRoom(chatRoom)
                 .member(member)
                 .build();
+    }
+
+    /********************************************************************/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatRoomMember that = (ChatRoomMember) o;
+        return Objects.equals(chatRoom, that.chatRoom) && Objects.equals(member, that.member);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(chatRoom, member);
     }
 }

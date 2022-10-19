@@ -47,15 +47,32 @@ public class ChatRoom {
         if (this.chatRoomMembers.contains(chatRoomMember)) {
             return;
         }
+        member.enterChatRoom(chatRoomMember);
         this.chatRoomMembers.add(chatRoomMember);
     }
 
     public void popMember(Member member) {
         ChatRoomMember chatRoomMember = ChatRoomMember.of(this, member);
+        member.leaveChatRoom(chatRoomMember);
         this.chatRoomMembers.remove(chatRoomMember);
     }
 
     public void addChatMessages(List<ChatMessage> chatMessages) {
         this.chatMessages.addAll(chatMessages);
+    }
+
+    /********************************************************************/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatRoom chatRoom = (ChatRoom) o;
+        return Objects.equals(id, chatRoom.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
