@@ -71,6 +71,15 @@ dependencies {
 
 	// Asciidoctor
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+	//Querydsl 추가
+	implementation 'com.querydsl:querydsl-jpa'
+	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jpa"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+	// Configuration-processor
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 tasks.named('test') {
@@ -161,4 +170,9 @@ task copyDocument(type: Copy) {
 
 build {
 	dependsOn copyDocument
+}
+
+// QueryDsl
+clean {
+	delete file('src/main/generated')
 }
