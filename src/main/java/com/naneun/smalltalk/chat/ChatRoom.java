@@ -48,13 +48,11 @@ public class ChatRoom {
         if (this.chatRoomMembers.contains(chatRoomMember)) {
             return;
         }
-        member.enterChatRoom(chatRoomMember);
         this.chatRoomMembers.add(chatRoomMember);
     }
 
     public void popMember(Member member) {
         ChatRoomMember chatRoomMember = ChatRoomMember.of(this, member);
-        member.leaveChatRoom(chatRoomMember);
         this.chatRoomMembers.remove(chatRoomMember);
     }
 
