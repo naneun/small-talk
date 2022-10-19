@@ -28,7 +28,7 @@ public class Member {
 
     @JoinColumn
     @OneToMany(fetch = FetchType.LAZY)
-    private List<ChatRoomMember> ChatRooms;
+    private List<ChatRoomMember> chatRooms;
 
     @CreatedDate
     private LocalDateTime lastAccessedAt;
